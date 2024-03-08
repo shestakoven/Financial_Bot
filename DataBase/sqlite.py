@@ -1,11 +1,10 @@
-import sqlite3 as sq
-from create_bot import bot
 import datetime
+import sqlite3 as sq
 
+from create_bot import bot
 
 now = datetime.datetime.now()
 month = now.strftime("%B")
-
 
 
 async def db_start():
@@ -19,10 +18,11 @@ async def db_start():
     db.commit()
 
 
-async def create_value(state,user_id):
+async def create_value(state, user_id):
     "Добавляем значения в БД"
     async with state.proxy() as data:
-        cur.execute("INSERT INTO finance VALUES(?, ?, ?, ?, ?)",(data['id'], user_id, data['date'], data['category'], data['value']))
+        cur.execute("INSERT INTO finance VALUES(?, ?, ?, ?, ?)",
+                    (data['id'], user_id, data['date'], data['category'], data['value']))
         db.commit()
 
 
@@ -39,7 +39,8 @@ async def get_today(message):
     where strftime('%d', datetime('now')) = strftime('%d', date)""").fetchall()
     result += '__________________________________\n'
     result += f'<b>Общий итог:</b> {total[0][0]} руб'
-    await bot.send_message(message.from_user.id, text= result, parse_mode='html')
+    await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+
 
 async def get_month(message):
     "Получаем траты за месяц"
@@ -56,6 +57,7 @@ async def get_month(message):
     result += f'<b>Общий итог:</b> {total[0][0]} руб'
     await bot.send_message(message.from_user.id, text=result, parse_mode='html')
 
+
 async def get_week(message):
     "Получаем траты за неделю"
     result = f"<b>Ваши траты за неделю:</b>\n"
@@ -70,6 +72,7 @@ async def get_week(message):
     result += '__________________________________\n'
     result += f'<b>Общий итог:</b> {total[0][0]} руб'
     await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+
 
 async def last_values(message):
     "Вывод последних 5 добавленных записей"
@@ -86,9 +89,11 @@ async def last_values(message):
     msg_del = await bot.send_message(message.from_user.id, text=result, parse_mode='html')
     # используем глобальную переменную msg_del, чтобы потом удалять данное сообщение
 
+
 """
 --------Команды для удаления строк--------
 """
+
 
 async def del_0(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
@@ -99,6 +104,7 @@ async def del_0(message):
     await msg_del.delete()
     await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
+
 async def del_1(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[1]}""").fetchall():
@@ -107,6 +113,7 @@ async def del_1(message):
     db.commit()
     await msg_del.delete()
     await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+
 
 async def del_2(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
@@ -117,6 +124,7 @@ async def del_2(message):
     await msg_del.delete()
     await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
+
 async def del_3(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[3]}""").fetchall():
@@ -125,6 +133,7 @@ async def del_3(message):
     db.commit()
     await msg_del.delete()
     await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+
 
 async def del_4(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance

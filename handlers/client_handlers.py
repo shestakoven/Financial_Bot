@@ -1,9 +1,9 @@
 from aiogram import types, Dispatcher
-from create_bot import bot
-from DataBase.sqlite import get_today, get_month, get_week, last_values
-from keyboards import client_kb
 from aiogram.dispatcher.filters.state import StatesGroup, State
 
+from DataBase.sqlite import get_today, get_month, get_week, last_values
+from create_bot import bot
+from keyboards import client_kb
 
 
 class ValueStateGroup(StatesGroup):
@@ -13,6 +13,7 @@ class ValueStateGroup(StatesGroup):
     category = State()
     date = State()
     value = State()
+
 
 START = """
 <b>Бот учета финансов💲</b>
@@ -25,28 +26,26 @@ START = """
 """
 
 
-async def start_command(message : types.Message):
+async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.from_user.id,
                            text=START,
                            reply_markup=client_kb.kb, parse_mode='html')
 
-async def spend_today_command(message : types.Message):
+
+async def spend_today_command(message: types.Message):
     await get_today(message)
 
 
-async def spend_month_command(message : types.Message):
+async def spend_month_command(message: types.Message):
     await get_month(message)
 
 
-async def spend_week_command(message : types.Message):
+async def spend_week_command(message: types.Message):
     await get_week(message)
 
 
-async def last_values_command(message : types.Message):
+async def last_values_command(message: types.Message):
     await last_values(message)
-
-
-
 
 
 def register_handlers_client(dp: Dispatcher):
@@ -55,4 +54,3 @@ def register_handlers_client(dp: Dispatcher):
     dp.register_message_handler(spend_month_command, commands=['month'])
     dp.register_message_handler(spend_week_command, commands=['week'])
     dp.register_message_handler(last_values_command, commands=['record'])
-

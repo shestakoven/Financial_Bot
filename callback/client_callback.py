@@ -1,17 +1,20 @@
 from aiogram import types, Dispatcher
 from aiogram.dispatcher import FSMContext
-from handlers import client_handlers
+
 from DataBase import sqlite
 from create_bot import bot
+from handlers import client_handlers
 from keyboards import client_kb
 
-async def add_spend_command(message : types.Message):
+
+async def add_spend_command(message: types.Message):
     global INL_TAB, CANCEL
     CANCEL = await bot.send_message(chat_id=message.from_user.id,
-                           text='Для отмены нажмите команду /cancel')
+                                    text='Для отмены нажмите команду /cancel')
     INL_TAB = await bot.send_message(chat_id=message.from_user.id,
-                           text='Выберите нужную категорию:',
-                           reply_markup = client_kb.ikb)
+                                     text='Выберите нужную категорию:',
+                                     reply_markup=client_kb.ikb)
+
 
 async def products_callback(callback: types.CallbackQuery, state: FSMContext):
     global COSTS
@@ -21,7 +24,8 @@ async def products_callback(callback: types.CallbackQuery, state: FSMContext):
         data['date'] = callback['message']['date']
     COSTS = await callback.message.answer(f'Введите сумму расходов для категории {callback.data}:')
     await callback.answer()
-    await client_handlers.ValueStateGroup.value.set() # ожидаем ввод числа
+    await client_handlers.ValueStateGroup.value.set()  # ожидаем ввод числа
+
 
 async def value_message(message: types.Message, state: FSMContext):
     global NUM
@@ -37,7 +41,8 @@ async def value_message(message: types.Message, state: FSMContext):
     else:
         NUM = await message.answer('Введите число')
 
-async def cancel_command(message : types.Message, state: FSMContext):
+
+async def cancel_command(message: types.Message, state: FSMContext):
     if state is None:
         return
     await state.finish()
@@ -48,6 +53,7 @@ async def cancel_command(message : types.Message, state: FSMContext):
     if 'NUM' in globals():
         await NUM.delete()
     await message.answer('✅ <b>Вы отменили команду</b>', parse_mode='html')
+
 
 def register_callback_client(dp: Dispatcher):
     dp.register_message_handler(cancel_command, commands=['cancel'], state='*')

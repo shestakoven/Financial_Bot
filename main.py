@@ -1,11 +1,9 @@
-from aiogram import executor, types
-from aiogram.dispatcher.middlewares import BaseMiddleware
-from aiogram.dispatcher.handler import CancelHandler
+from aiogram import executor
+
 from DataBase.sqlite import db_start
+from callback import client_callback
 from create_bot import dp
 from handlers import client_handlers, delete_handlers
-from callback import client_callback
-
 
 
 async def on_startup(_):
@@ -32,7 +30,6 @@ client_callback.register_callback_client(dp)
 
 delete_handlers.register_handlers_delete(dp)
 
-
 if __name__ == '__main__':
     # dp.middleware.setup(CustomMiddleware())
-    executor.start_polling(dp, skip_updates=True, on_startup = on_startup)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup)
