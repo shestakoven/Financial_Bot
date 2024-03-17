@@ -9,9 +9,9 @@ from keyboards import client_kb
 
 async def add_spend_command(message: types.Message):
     global INL_TAB, CANCEL
-    CANCEL = await bot.send_message(chat_id=message.from_user.id,
+    CANCEL = await bot.send_message(chat_id=message.chat.id,
                                     text='Для отмены нажмите команду /cancel')
-    INL_TAB = await bot.send_message(chat_id=message.from_user.id,
+    INL_TAB = await bot.send_message(chat_id=message.chat.id,
                                      text='Выберите нужную категорию:',
                                      reply_markup=client_kb.ikb)
 
@@ -22,9 +22,10 @@ async def products_callback(callback: types.CallbackQuery, state: FSMContext):
         data['id'] = callback.id
         data['category'] = callback.data
         data['date'] = callback['message']['date']
-    COSTS = await callback.message.answer(f'Введите сумму расходов для категории {callback.data}:')
-    await callback.answer()
+    COSTS = await callback.message.answer(f'Введите сумму расходов для категории {callback.data}:',
+                                          reply_markup=types.ForceReply())
     await client_handlers.ValueStateGroup.value.set()  # ожидаем ввод числа
+    await callback.answer()
 
 
 async def value_message(message: types.Message, state: FSMContext):
@@ -34,12 +35,12 @@ async def value_message(message: types.Message, state: FSMContext):
             data['value'] = message.text
         await INL_TAB.delete()
         await CANCEL.delete()
-        result = f"✅ <b>Данные успешно сохранены</b>\n\nВремя: {data['date'].strftime('%H:%M - %d')}\n{data['category']} - {data['value']} руб."
-        await message.answer(result, parse_mode='html')
-        await sqlite.create_value(state, user_id=message.from_user.id)
+        result = f"✅ <b>Данные успешно сохранены</b>\n\nВремя: {data['date'].strftime('%H:%M - %d')}\n{data['category']} - {data['value']} динар."
+        await message.answer(result, parse_mode='html', reply_markup=client_kb.kb)
+        await sqlite.create_value(state, user_id=message.chat.id)
         await state.finish()
     else:
-        NUM = await message.answer('Введите число')
+        NUM = await message.answer('Введите число', reply_markup=types.ForceReply())
 
 
 async def cancel_command(message: types.Message, state: FSMContext):

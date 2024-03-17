@@ -20,8 +20,8 @@ async def on_startup(_):
 #
 #     async def on_process_message(self, message: types.Message,data: dict):
 #
-#         if message.from_user.id != ADMIN:
-#             print(message.from_user.id)
+#         if message.chat.id != ADMIN:
+#             print(message.chat.id)
 #             raise CancelHandler()
 
 client_handlers.register_handlers_client(dp)

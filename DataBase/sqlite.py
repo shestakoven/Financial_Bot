@@ -34,12 +34,12 @@ async def get_today(message):
     group by category
     order by sum(value)""").fetchall():
         result += '\n'
-        result += f'{ret[0]} - {ret[1]} руб.\n'
+        result += f'{ret[0]} - {ret[1]} динар.\n'
     total = cur.execute("""SELECT sum(value) from finance 
     where strftime('%d', datetime('now')) = strftime('%d', date)""").fetchall()
     result += '__________________________________\n'
-    result += f'<b>Общий итог:</b> {total[0][0]} руб'
-    await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+    result += f'<b>Общий итог:</b> {total[0][0]} динар'
+    await bot.send_message(message.chat.id, text=result, parse_mode='html')
 
 
 async def get_month(message):
@@ -50,12 +50,12 @@ async def get_month(message):
     group by category
     order by sum(value)""").fetchall():
         result += '\n'
-        result += f'{ret[0]} - {ret[1]} руб.\n'
+        result += f'{ret[0]} - {ret[1]} динар.\n'
     total = cur.execute("""SELECT sum(value) from finance 
     where strftime('%m', datetime('now')) = strftime('%m', date)""").fetchall()
     result += '__________________________________\n'
-    result += f'<b>Общий итог:</b> {total[0][0]} руб'
-    await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+    result += f'<b>Общий итог:</b> {total[0][0]} динар'
+    await bot.send_message(message.chat.id, text=result, parse_mode='html')
 
 
 async def get_week(message):
@@ -66,12 +66,12 @@ async def get_week(message):
     group by category
     order by sum(value)""").fetchall():
         result += '\n'
-        result += f'{ret[0]} - {ret[1]} руб.\n'
+        result += f'{ret[0]} - {ret[1]} динар.\n'
     total = cur.execute("""SELECT sum(value) from finance 
         where strftime('%W', datetime('now')) = strftime('%W', date)""").fetchall()
     result += '__________________________________\n'
-    result += f'<b>Общий итог:</b> {total[0][0]} руб'
-    await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+    result += f'<b>Общий итог:</b> {total[0][0]} динар'
+    await bot.send_message(message.chat.id, text=result, parse_mode='html')
 
 
 async def last_values(message):
@@ -83,10 +83,10 @@ async def last_values(message):
     for ret in cur.execute("""select category, value, strftime('%H:%M - %d', date), id from finance
     order by date desc
     limit 5""").fetchall():
-        result += f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб. /del_{i}\n\n'
+        result += f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар. /del_{i}\n\n'
         value.append(ret[3])
         i += 1
-    msg_del = await bot.send_message(message.from_user.id, text=result, parse_mode='html')
+    msg_del = await bot.send_message(message.chat.id, text=result, parse_mode='html')
     # используем глобальную переменную msg_del, чтобы потом удалять данное сообщение
 
 
@@ -98,48 +98,48 @@ async def last_values(message):
 async def del_0(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[0]}""").fetchall():
-        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб.\n\n'
+        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар.\n\n'
     cur.execute(f"""DELETE from finance where id = {value[0]}""")
     db.commit()
     await msg_del.delete()
-    await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+    await bot.send_message(message.chat.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
 
 async def del_1(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[1]}""").fetchall():
-        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб.\n\n'
+        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар.\n\n'
     cur.execute(f"""DELETE from finance where id = {value[1]}""")
     db.commit()
     await msg_del.delete()
-    await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+    await bot.send_message(message.chat.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
 
 async def del_2(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[2]}""").fetchall():
-        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб.\n\n'
+        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар.\n\n'
     cur.execute(f"""DELETE from finance where id = {value[2]}""")
     db.commit()
     await msg_del.delete()
-    await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+    await bot.send_message(message.chat.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
 
 async def del_3(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[3]}""").fetchall():
-        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб.\n\n'
+        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар.\n\n'
     cur.execute(f"""DELETE from finance where id = {value[3]}""")
     db.commit()
     await msg_del.delete()
-    await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+    await bot.send_message(message.chat.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
 
 
 async def del_4(message):
     for ret in cur.execute(f"""select category, value, strftime('%H:%M - %d', date) from finance
     where id = {value[4]}""").fetchall():
-        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} руб.\n\n'
+        result = f'Время: {ret[2]} \n{ret[0]} - {ret[1]} динар.\n\n'
     cur.execute(f"""DELETE from finance where id = {value[4]}""")
     db.commit()
     await msg_del.delete()
-    await bot.send_message(message.from_user.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')
+    await bot.send_message(message.chat.id, text=f'✅ <b>Запись удалена</b>\n\n{result}', parse_mode='html')

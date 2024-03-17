@@ -1,0 +1,8 @@
+services:
+    bot:
+        build: .
+        command: python3 /app/main.py
+        volumes:
+            - .:/app
+        environment:
+            - TOKEN=your_token

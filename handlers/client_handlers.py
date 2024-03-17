@@ -27,7 +27,7 @@ START = """
 
 
 async def start_command(message: types.Message):
-    await bot.send_message(chat_id=message.from_user.id,
+    await bot.send_message(chat_id=message.chat.id,
                            text=START,
                            reply_markup=client_kb.kb, parse_mode='html')
 
